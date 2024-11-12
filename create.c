@@ -55,6 +55,9 @@ pid32	create(
 	prptr->turnaroundtime = 0;
 	prptr->num_ctxsw = 0;
 
+	prptr->arrivaltime = ctr1000;
+	prptr->process_assigned = 0;
+
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;
@@ -134,7 +137,7 @@ pid32	create_user_process(
 
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
-	prptr->prprio = 5;
+	prptr->prprio = mlfq[0].priority;
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;
@@ -149,9 +152,9 @@ pid32	create_user_process(
 	prptr->turnaroundtime = 0;
 	prptr->num_ctxsw = 0;
 	
-    prptr->tickets = 0;
 	prptr->arrivaltime = ctr1000;
-
+	prptr->process_assigned = 0;
+	
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;
@@ -222,15 +225,6 @@ local	pid32	newpid(void)
 	return (pid32) SYSERR;
 }
 
-void set_tickets(pid32 pid, uint32 tickets)
-{
-	// assign tickets to each process after checking the flag
-	if(proctab[pid].user_process)
-	{
-		proctab[pid].tickets = tickets;
-	}
-}
-
 void burst_execution(uint32 number_bursts, uint32 burst_duration, uint32 sleep_duration)
 {
     uint32 count;
@@ -245,3 +239,5 @@ void burst_execution(uint32 number_bursts, uint32 burst_duration, uint32 sleep_d
         sleepms(sleep_duration);
     }
 }
+
+

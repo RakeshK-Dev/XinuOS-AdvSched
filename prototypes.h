@@ -45,12 +45,6 @@ extern	syscall	control(did32, int32, int32, int32);
 extern	pid32	create(void *, uint32, pri16, char *, uint32, ...);
 
 /* in file create.c */
-extern	pid32	create_user_process(void *, uint32, char *, uint32, ...);
-
-/* in file create.c */
-void set_tickets(pid32, uint32);
-
-/* in file create.c */
 extern void burst_execution(uint32, uint32, uint32);
 
 /* in file ctxsw.S */
@@ -169,6 +163,9 @@ extern	int32	sizmem(void);
 
 /* in file insert.c */
 extern	status	insert(pid32, qid16, int32);
+
+/* in file insert.c */
+extern	status	insert_mlfq(pid32, qid16);
 
 /* in file insertd.c */
 extern	status	insertd(pid32, qid16, int32);
@@ -472,9 +469,7 @@ extern	umsg32	recvtime(int32);
 /* in file resched.c */
 extern	void	resched(void);
 extern	status	resched_cntl(int32);
-extern  pid32   select_lottery(); 
-extern  pid32   single_lsprocess();
-extern  uint32  lsprocess_count();
+extern  void    reset_timing();
 
 /* in file intutils.S */
 extern	void	restore(intmask);

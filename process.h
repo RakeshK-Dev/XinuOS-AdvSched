@@ -53,11 +53,13 @@ struct procent {		/* Entry in the process table		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
 	bool8   user_process;   /* Distinguishes the process category   */
-	uint32  runtime;    /* Number of milliseconds the process has been running   */
+	uint32  runtime;        /* Number of milliseconds the process has been running   */
 	uint32  turnaroundtime; /* Turnaround time in milliseconds   */
-	uint32  num_ctxsw;  /* number of context switch operations to the process   */ 
+	uint32  num_ctxsw;      /* number of context switch operations to the process   */ 
 	uint32  arrivaltime;    /* Arrival time of process in milliseconds   */
-	uint32  tickets;   /* Available tickets count for a particular process  */
+	uint32  upgrades;       /* Number of priority upgrades   */
+	uint32  downgrades;     /* Number of priority downgrades   */
+	uint32  process_assigned;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

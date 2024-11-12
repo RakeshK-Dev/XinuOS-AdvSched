@@ -148,7 +148,7 @@ static	void	sysinit()
 	int32	i;
 	struct	procent	*prptr;		/* Ptr to process table entry	*/
 	struct	sentry	*semptr;	/* Ptr to semaphore table entry	*/
-
+	uint32 j = TIME_ALLOTMENT;
 	/* Reset the console */
 
 	kprintf(CONSOLE_RESET);
@@ -192,14 +192,14 @@ static	void	sysinit()
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
 	currpid = NULLPROC;
-
+	prptr->user_process = FALSE;
 	prptr->runtime = 0;
 	prptr->turnaroundtime = 0;
 	prptr->num_ctxsw = 0;
-
-	prptr->tickets = 0;
-	prptr->user_process = FALSE;
-
+	
+	prptr->arrivaltime = 0;
+	prptr->process_assigned = 0;
+	
 	/* Initialize semaphores */
 
 	for (i = 0; i < NSEM; i++) {
@@ -217,10 +217,6 @@ static	void	sysinit()
 
 	readylist = newqueue();
 
-	/* Create a userlist list for processes */
-
-	userlist = newqueue();
-
 	/* initialize the PCI bus */
 
 	pci_init();
@@ -228,6 +224,16 @@ static	void	sysinit()
 	/* Initialize the real time clock */
 
 	clkinit();
+
+	/* Initialize the values in mlfq queue for processes */
+	
+	for (i = 0; i < UPRIORITY_QUEUES; ++i) {
+		mlfq[i].level = newqueue();
+		mlfq[i].priority = UPRIORITY_QUEUES - i;
+		mlfq[i].time_assigned = j;
+		j = 2*j;
+	}
+	
 
 	for (i = 0; i < NDEVS; i++) {
 		init(i);

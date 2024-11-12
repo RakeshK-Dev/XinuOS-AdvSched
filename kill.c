@@ -20,7 +20,7 @@ syscall	kill(
 		restore(mask);
 		return SYSERR;
 	}
-	
+
 	prptr->turnaroundtime = ctr1000 - prptr->arrivaltime;
 	
 	if (--prcount <= 1) {		/* Last user process completes	*/

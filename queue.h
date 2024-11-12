@@ -5,7 +5,7 @@
 /* Default # of queue entries: 1 per process plus 2 for ready list plus	*/
 /*			2 for sleep list plus 2 per semaphore		*/
 #ifndef NQENT
-#define NQENT	(NPROC + 4 + NSEM + NSEM + 2)		/* Extra 2 to handle userlist head and tail*/  
+#define NQENT	(NPROC + 4 + NSEM + NSEM + 2 * UPRIORITY_QUEUES)		/* Extra 2 * UPRIORITY_QUEUES to handle userlist head and tail*/ 
 #endif
 
 #define	EMPTY	(-1)		/* Null value for qnext or qprev index	*/
@@ -34,3 +34,12 @@ extern	struct qentry	queuetab[];
 /* Inline to check queue id assumes interrupts are disabled */
 
 #define	isbadqid(x)	(((int32)(x) < NPROC) || (int32)(x) >= NQENT-1)
+
+struct mlfq_queue
+{
+	uint16 priority;
+	qid16  level;
+	uint32 time_assigned;
+};
+
+extern	struct mlfq_queue	mlfq[];

@@ -4,7 +4,6 @@
 #define	nextprocess(q)	(queuetab[q].qnext)
 
 qid16	readylist;			/* Index of ready list		*/
-qid16   userlist;
 
 syscall print_ready_list()
 {
@@ -36,14 +35,26 @@ status	ready(
 	}
 
 	/* Set process state to indicate ready and add to ready list */
-
+	uint32 queue_index;
 	prptr = &proctab[pid];
 	prptr->prstate = PR_READY;
 
-	if (prptr->user_process == TRUE)
+	if (prptr->user_process) 
 	{
-		insert(pid, userlist, prptr->tickets);
-	}
+        /* Find the correct multi-level queue based on process priority */
+        //uint32 queue_index = UPRIORITY_QUEUES - prptr->prprio;
+        
+        /* Validate that queue_index is within range before inserting */
+        //if (queue_index < UPRIORITY_QUEUES) {
+		for (queue_index = 0; queue_index < UPRIORITY_QUEUES; queue_index++)
+		{
+			if (prptr->prprio == (UPRIORITY_QUEUES - queue_index))
+			{
+				insert_mlfq(pid, mlfq[queue_index].level);
+				break;
+			}
+        }
+    }
 	else
 	{
 		insert(pid, readylist, prptr->prprio);
