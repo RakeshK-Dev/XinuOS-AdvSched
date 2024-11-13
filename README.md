@@ -46,3 +46,6 @@ To test or run this project:
 ## Conclusion:
 This project showcases the understanding and application of process management and scheduling in an OS. It demonstrates the implementation of algorithms that balance CPU time distribution and prioritize tasks effectively. The repository also serves as a learning resource for peers interested in operating systems and scheduling policies.
 
+
+---
+
